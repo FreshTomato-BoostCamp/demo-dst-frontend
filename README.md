@@ -1,4 +1,7 @@
-# demo-dst
+# DST Demo Client
+
+![image](https://user-images.githubusercontent.com/48202492/120898639-af99fb00-c666-11eb-82fa-f65862773c7c.png)
+
 
 ## Project setup
 ```
