@@ -3,10 +3,7 @@
         <h3> Dialogue History </h3>
         <div class="chatroom">
             <div class="message-list">
-            <!-- <div v-for="msg in messages" :key="msg.message">
-                {{ msg.message }}
-            </div> -->
-                <ChatMessage v-for="msg in messages" :key="msg.message" :message="msg"/>
+                <ChatMessage v-for="d in dials" :key="dials.indexOf(d)" :message="d.dialogue[0]"/>
             </div>
             <input type="text" v-model="inputText" @keyup.enter="submitItem()" placeholder="Input your message"/>
             <v-btn elevation="2" @click="submitItem()"> 전송 </v-btn>
@@ -29,19 +26,18 @@ export default {
     data () {
         return {
             inputText: '',
-            messages: [],
+            dials: [],
             state: []
         }
     },
     methods: {
         submitItem: function () {
             // this inside methods points to the Vue instance
-            var msg = this.specifyUser('yura', this.inputText)
-            // this.messages.push(this.specifyUser(this.inputText))
-            this.messages.push(msg)
-            console.log(this.messages)
+            var dial = this.specifyUser('yura', this.inputText)
+            this.dials.push(dial)
+            console.log(this.dials)
             this.emptyInput()
-            axios.post(api_server, msg).then(
+            axios.post(api_server, dial).then(
                 response => console.log(response))
         },
 
@@ -49,10 +45,16 @@ export default {
             this.inputText = ''
         },
 
-        specifyUser: function (user, text) {
+        specifyUser: function (did, text) {
             return {
-                    'user': 'yura',
-                    'message': text
+                    'dialogue_idx': did,
+                    'new_input': true,
+                    'dialogue': [
+                            {
+                                'role': 'user',
+                                'text': text
+                            }
+                        ]
                     }
         }
 
@@ -68,5 +70,6 @@ export default {
     height: 656px;
     position: relative;
     margin: auto;
+    overflow-y: scroll;
 }
 </style>
