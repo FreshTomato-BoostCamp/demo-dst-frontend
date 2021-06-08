@@ -16,7 +16,7 @@
 import ChatMessage from '../components/ChatMessage.vue'
 import axios from 'axios'
 
-var api_server = "http://b26a6c6ac5ae.ngrok.io"
+var api_server = "http://cc873ef189ce.ngrok.io"
 
 export default {
     name: 'ChatRoom',
@@ -25,6 +25,7 @@ export default {
     },
     data () {
         return {
+            did: 'yura',
             inputText: '',
             dials: [],
             state: []
@@ -33,21 +34,25 @@ export default {
     methods: {
         submitItem: function () {
             // this inside methods points to the Vue instance
-            var dial = this.specifyUser('yura', this.inputText)
+            var dial = this.wrapInput(this.inputText)
             this.dials.push(dial)
             console.log(this.dials)
             this.emptyInput()
-            axios.post(api_server, dial).then(
-                response => console.log(response))
+            axios.post(api_server, dial).then( response => {
+                let system_response = response.data
+                console.log(system_response['system-utter'])
+                console.log(system_response['state'])
+                this.dials.push(this.wrapResponse(system_response))
+            })
         },
 
         emptyInput: function () {
             this.inputText = ''
         },
 
-        specifyUser: function (did, text) {
+        wrapInput: function (text) {
             return {
-                    'dialogue_idx': did,
+                    'dialogue_idx': this.did,
                     'new_input': true,
                     'dialogue': [
                             {
@@ -56,6 +61,19 @@ export default {
                             }
                         ]
                     }
+        },
+
+        wrapResponse: function (response_content) {
+            return {
+                'dialogue_idx': this.did,
+                'dialogue': [
+                    {
+                        'role': 'system',
+                        'text': response_content['system-utter']
+                    }
+                ],
+                'state': response_content['state']
+            }
         }
 
     },
