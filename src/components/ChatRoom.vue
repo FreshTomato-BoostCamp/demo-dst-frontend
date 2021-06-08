@@ -16,7 +16,7 @@
 import ChatMessage from '../components/ChatMessage.vue'
 import axios from 'axios'
 
-var api_server = "http://cc873ef189ce.ngrok.io"
+var api_server = "{YOUR_API_SERVER}"
 
 export default {
     name: 'ChatRoom',
